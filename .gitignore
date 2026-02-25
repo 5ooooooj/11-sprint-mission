@@ -18,3 +18,4 @@ build/
 users.ser
 .DS_Store
 *.class
+*.ser
