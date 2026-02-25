@@ -7,6 +7,7 @@ import com.sprint.mission.discodeit.service.ChannelService;
 import com.sprint.mission.discodeit.service.MessageService;
 import com.sprint.mission.discodeit.service.UserService;
 import com.sprint.mission.discodeit.service.file.FileChannelService;
+import com.sprint.mission.discodeit.service.file.FileMessageService;
 import com.sprint.mission.discodeit.service.file.FileUserService;
 import com.sprint.mission.discodeit.service.jcf.JCFChannelService;
 import com.sprint.mission.discodeit.service.jcf.JCFMessageService;
@@ -81,7 +82,8 @@ public class JavaApplication {
         }
 
         // 메세지 테스트
-        MessageService messageService = new JCFMessageService(userService, channelService);
+        //MessageService messageService = new JCFMessageService(userService, channelService);
+        MessageService messageService = new FileMessageService(userService, channelService);
         System.out.println("========== 메세지 테스트 ==========");
 
         User u = userService.create(new User("강우진", "Hi"));
@@ -89,13 +91,13 @@ public class JavaApplication {
         Message m = new Message(u.getId(), c.getId(), "반가워");
 
         messageService.create(m);
-        System.out.println(u.getUserName()+ "의 '" + c.getChannelName()+ "' 채널에서 보낸 메세지 : " + m.getContent());
+        System.out.println(u.getUserName() + "의 '" + c.getChannelName() + "' 채널에서 보낸 메세지 : " + m.getContent());
 
         u.updateUserName("강우진바보");
         m.updateContent("반가워바보 ~ ");
         userService.update(u);
         messageService.update(m);
-        System.out.println(u.getUserName()+ "의 '" + c.getChannelName()+ "' 채널에서 보낸 메세지 : " + m.getContent());
+        System.out.println(u.getUserName() + "의 '" + c.getChannelName() + "' 채널에서 보낸 메세지 : " + m.getContent());
         System.out.println("마지막 이름 변경 시각 : " + c.getUpdatedAtText());
 
         // 일치하는 user id가 없을때 검증
