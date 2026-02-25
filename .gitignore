@@ -6,4 +6,9 @@ build/build/
 .idea/
 *.class
 users.ser
-.ser
+.serbuild/
+.gradle/
+.idea/
+*.class
+users.ser
+.DS_Store
