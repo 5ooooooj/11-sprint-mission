@@ -1,12 +1,15 @@
 package com.sprint.mission.discodeit.entity;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.UUID;
 
-public abstract class BaseEntity {
+public abstract class BaseEntity implements Serializable {
+
+
     // 상속으로 해야 시스템 기능이나 새로운 객체 생성시 유지보수 편리함
     // id, createdAt : 생성자에서 초기화 >> 객체 new 자동값 세팅, 외부 setter X
     private final UUID id;

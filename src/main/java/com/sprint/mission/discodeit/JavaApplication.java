@@ -6,6 +6,7 @@ import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.service.ChannelService;
 import com.sprint.mission.discodeit.service.MessageService;
 import com.sprint.mission.discodeit.service.UserService;
+import com.sprint.mission.discodeit.service.file.FileUserService;
 import com.sprint.mission.discodeit.service.jcf.JCFChannelService;
 import com.sprint.mission.discodeit.service.jcf.JCFMessageService;
 import com.sprint.mission.discodeit.service.jcf.JCFUserService;
@@ -17,7 +18,8 @@ import java.util.UUID;
 public class JavaApplication {
     public static void main(String[] args) {
         // 유저 테스트
-        UserService userService = new JCFUserService();
+        // 구현체 변경 UserService userService = new JCFUserService();
+        UserService userService = new FileUserService();
         System.out.println("========== 유저 테스트 ==========");
 
         User u1 = new User("강우진", "안녕하세요.");
