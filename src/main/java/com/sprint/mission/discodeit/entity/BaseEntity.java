@@ -51,5 +51,5 @@ public abstract class BaseEntity implements Serializable {
         // 매번 쓰는거 방지 + 유지보수 측면
         this.updatedAt = System.currentTimeMillis();
     }
-    
+
 }

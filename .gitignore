@@ -1,4 +1,9 @@
 .DS_Store
 .idea/
 .gradle/
-build/
+build/build/
+.gradle/
+.idea/
+*.class
+users.ser
+.ser
