@@ -12,7 +12,7 @@ public class FileUserService implements UserService {
     private Map<UUID, User> data;
 
     public FileUserService() {
-        this("users.ser"); // 저장 파일명(원하면 변경 가능)
+        this("data/users.ser"); // 저장 파일명(원하면 변경 가능)
     }
 
     public FileUserService(String filePath) {

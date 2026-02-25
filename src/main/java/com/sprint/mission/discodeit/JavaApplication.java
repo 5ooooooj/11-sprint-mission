@@ -6,6 +6,7 @@ import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.service.ChannelService;
 import com.sprint.mission.discodeit.service.MessageService;
 import com.sprint.mission.discodeit.service.UserService;
+import com.sprint.mission.discodeit.service.file.FileChannelService;
 import com.sprint.mission.discodeit.service.file.FileUserService;
 import com.sprint.mission.discodeit.service.jcf.JCFChannelService;
 import com.sprint.mission.discodeit.service.jcf.JCFMessageService;
@@ -51,7 +52,8 @@ public class JavaApplication {
         }
 
         // 채널 테스트
-        ChannelService channelService = new JCFChannelService();
+        // 구현체 교체 ChannelService channelService = new JCFChannelService();
+        ChannelService channelService = new FileChannelService();
         System.out.println("========== 채널 테스트 ==========");
 
         Channel c1 = new Channel("모각코", "모여서각자코딩");
