@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.UUID;
 
 public abstract class BaseEntity implements Serializable {
-
+    private static final long serialVersionUID = 1L;
 
     // 상속으로 해야 시스템 기능이나 새로운 객체 생성시 유지보수 편리함
     // id, createdAt : 생성자에서 초기화 >> 객체 new 자동값 세팅, 외부 setter X
@@ -51,5 +51,5 @@ public abstract class BaseEntity implements Serializable {
         // 매번 쓰는거 방지 + 유지보수 측면
         this.updatedAt = System.currentTimeMillis();
     }
-
+    
 }
