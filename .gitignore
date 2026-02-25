@@ -12,3 +12,9 @@ users.ser
 *.class
 users.ser
 .DS_Store
+build/
+.gradle/
+.idea/
+users.ser
+.DS_Store
+*.class
