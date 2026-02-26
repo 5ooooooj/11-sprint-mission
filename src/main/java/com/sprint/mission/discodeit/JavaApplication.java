@@ -16,6 +16,19 @@ import com.sprint.mission.discodeit.service.jcf.JCFUserService;
 import java.time.Instant;
 import java.util.UUID;
 
+// Compare JCFService to FileService
+
+// 공통 (비즈니스 로직) : create, findById, findAll, update, delete
+//      + FileService에만 validate 있음
+//      + data.put(), data.remove(), new ArrayList<>(data.values())
+// 차이 (저장 로직) : JCFService는 Map만 사용, 메모리저장, 앱종료시 데이터 사라짐
+//                FileService는 Map + load() & save(), 파일저장, 데이터 누적(유지)
+
+// 현재 FileService는 비즈니스로직과 저장 로직을 둘 다 담당하고 있음
+// 따라서 이제부터 관심사 분리. 즉, Service와 Repository를 분리할 것
+
+// Service는 무엇을 저장할지 (규칙) 담당
+// Repository는 어떻게 저장할지 담당 >> 유지보수 쉬워짐 
 
 public class JavaApplication {
     public static void main(String[] args) {

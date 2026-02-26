@@ -62,6 +62,7 @@ public class FileMessageService implements MessageService {
 
     // 검증 로직
 
+
     private void validate(Message message) {
         if (userService.findById(message.getUserId()) == null) {
             throw new IllegalStateException("존재하지 않는 유저입니다.");
