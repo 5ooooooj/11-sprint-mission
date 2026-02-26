@@ -12,7 +12,8 @@ public interface ChannelRepository {
 
     List<Channel> findAll();
 
-    Channel update(Channel channel);
+//    Channel update(Channel channel);
+//    >> 레포지토리는 save 하나로 저장,업데이트 다 할수 있으니까
 
     void delete(UUID id);
 }

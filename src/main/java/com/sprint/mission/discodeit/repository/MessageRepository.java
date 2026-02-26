@@ -12,7 +12,8 @@ public interface MessageRepository {
 
     List<Message> findAll();
 
-    Message update(Message message);
+//    Message update(Message message);
+// >> 레포지토리는 save 하나로 저장,업데이트 다 할수 있으니까
 
     void delete(UUID id);
 }
