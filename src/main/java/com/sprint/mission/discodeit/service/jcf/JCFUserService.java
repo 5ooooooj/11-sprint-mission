@@ -2,47 +2,43 @@ package com.sprint.mission.discodeit.service.jcf;
 
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.User;
+import com.sprint.mission.discodeit.repository.UserRepository;
 import com.sprint.mission.discodeit.service.UserService;
 
 import java.util.*;
 
 public class JCFUserService implements UserService {
-    private final Map<UUID, User> data;
+    private final UserRepository userRepository;
 
-    public JCFUserService() {
-        this.data = new HashMap<>();
+    public JCFUserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     @Override
     public User create(User user) {
-    //    if (data.containsKey(user.getId())) {
-    //        throw new IllegalStateException("id가 존재하지 않습니다. id를 먼저 만드세요.");
-    //    }
-        data.put(user.getId(), user);
-        return user;
+        return userRepository.save(user);
     }
 
     @Override
     public User findById(UUID id) {
-        return data.get(id);
+        return userRepository.findById(id);
     }
 
     @Override
     public List<User> findAll() {
-        return new ArrayList<>(data.values());
+        return userRepository.findAll();
     }
 
     @Override
     public User update(User user) {
-    //    if (!data.containsKey(user.getId())) {
-    //        throw new IllegalStateException("id가 존재하지 않습니다. id를 먼저 만드세요.");
-    //    }
-        data.put(user.getId(), user);
-        return user;
+        if (userRepository.findById(user.getId()) == null){
+            throw new IllegalStateException("존재하지 않는 유저입니다.");
+        }
+        return userRepository.save(user);
     }
 
     @Override
     public void delete(UUID id) {
-        data.remove(id);
+        userRepository.delete(id);
     }
 }

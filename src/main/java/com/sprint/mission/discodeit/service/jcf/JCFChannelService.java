@@ -1,47 +1,45 @@
 package com.sprint.mission.discodeit.service.jcf;
 
 import com.sprint.mission.discodeit.entity.Channel;
+import com.sprint.mission.discodeit.entity.User;
+import com.sprint.mission.discodeit.repository.ChannelRepository;
+import com.sprint.mission.discodeit.repository.UserRepository;
 import com.sprint.mission.discodeit.service.ChannelService;
 
 import java.util.*;
 
 public class JCFChannelService implements ChannelService {
-    private final Map<UUID, Channel> data;
+    private final ChannelRepository channelRepository;
 
-    public JCFChannelService() {
-        this.data = new HashMap<>();
+    public JCFChannelService(ChannelRepository channelRepository) {
+        this.channelRepository = channelRepository;
     }
 
     @Override
     public Channel create(Channel channel) {
-        //    if (data.containsKey(channel.getId())){
-        //        throw new IllegalStateException("이미 존재하는 id 입니다.");
-        //    }
-        data.put(channel.getId(), channel); // key(id)가 없으면 키 가져오고, value는 channel
-        return channel;
+        return channelRepository.save(channel);
     }
 
     @Override
     public Channel findById(UUID id) {
-        return data.get(id);
+        return channelRepository.findById(id);
     }
 
     @Override
     public List<Channel> findAll() {
-        return new ArrayList<>(data.values());
+        return channelRepository.findAll();
     }
 
     @Override
     public Channel update(Channel channel) {
-        //    if(!data.containsKey(channel.getId())){
-        //        throw new IllegalStateException("id가 존재하지 않습니다. id를 먼저 만드세요.");
-        //    }
-        data.put(channel.getId(), channel); // key(id)가 이미 있네? 덮어씀 + value 갱신
-        return channel;
+        if (channelRepository.findById(channel.getId()) == null) {
+            throw new IllegalStateException("존재하지 않는 채널입니다.");
+        }
+        return channelRepository.save(channel);
     }
 
     @Override
     public void delete(UUID id) {
-        data.remove(id);
+        channelRepository.delete(id);
     }
 }
