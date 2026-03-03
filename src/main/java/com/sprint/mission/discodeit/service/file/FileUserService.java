@@ -4,8 +4,8 @@ import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.repository.UserRepository;
 import com.sprint.mission.discodeit.service.UserService;
 
-import java.io.*;
-import java.util.*;
+import java.util.List;
+import java.util.UUID;
 
 public class FileUserService implements UserService {
     private final UserRepository userRepository;

@@ -4,6 +4,18 @@ import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.entity.User;
 
+import com.sprint.mission.discodeit.repository.ChannelRepository;
+import com.sprint.mission.discodeit.repository.MessageRepository;
+import com.sprint.mission.discodeit.repository.UserRepository;
+
+import com.sprint.mission.discodeit.repository.file.FileChannelRepository;
+import com.sprint.mission.discodeit.repository.file.FileMessageRepository;
+import com.sprint.mission.discodeit.repository.file.FileUserRepository;
+
+import com.sprint.mission.discodeit.repository.jcf.JCFChannelRepository;
+import com.sprint.mission.discodeit.repository.jcf.JCFMessageRepository;
+import com.sprint.mission.discodeit.repository.jcf.JCFUserRepository;
+
 import com.sprint.mission.discodeit.service.ChannelService;
 import com.sprint.mission.discodeit.service.MessageService;
 import com.sprint.mission.discodeit.service.UserService;
@@ -16,7 +28,7 @@ import com.sprint.mission.discodeit.service.jcf.JCFChannelService;
 import com.sprint.mission.discodeit.service.jcf.JCFMessageService;
 import com.sprint.mission.discodeit.service.jcf.JCFUserService;
 
-import java.time.Instant;
+import java.lang.module.ModuleDescriptor;
 import java.util.UUID;
 
 // Compare JCFService to FileService
@@ -35,17 +47,28 @@ import java.util.UUID;
 
 public class JavaApplication {
     public static void main(String[] args) {
+        // 조립 (Repository -> Service)
+
+        UserRepository userRepository = new FileUserRepository("data/users.ser");
+        ChannelRepository channelRepository = new FileChannelRepository("data/channels.ser");
+        MessageRepository messageRepository = new FileMessageRepository("data/messages.ser");
+
+        UserService userService = new FileUserService(userRepository);
+        ChannelService channelService = new FileChannelService(channelRepository);
+        MessageService messageService = new FileMessageService(messageRepository, userService, channelService);
+
         // 유저 테스트
-        // 구현체 변경 UserService userService = new JCFUserService();
-        UserService userService = new FileUserService();
         System.out.println("========== 유저 테스트 ==========");
 
         User u1 = new User("강우진", "안녕하세요.");
         userService.create(u1); // 생성
+
         User u2 = new User("박지현", "반갑습니다.");
         userService.create(u2); // 생성
+
         User u3 = new User("한교동", "잘부탁드려요.");
         userService.create(u3); // 생성
+
         System.out.println("유저 ID : " + userService.findById(u1.getId())); // id 조회
         System.out.println("유저 ID : " + userService.findById(u2.getId())); // id 조회
         System.out.println("유저 ID : " + userService.findById(u3.getId())); // id 조회
@@ -69,12 +92,11 @@ public class JavaApplication {
         }
 
         // 채널 테스트
-        // 구현체 교체 ChannelService channelService = new JCFChannelService();
-        ChannelService channelService = new FileChannelService();
         System.out.println("========== 채널 테스트 ==========");
 
         Channel c1 = new Channel("모각코", "모여서각자코딩");
         channelService.create(c1);
+
         Channel c2 = new Channel("sb11", "스프링백엔드11기");
         channelService.create(c2);
 
@@ -98,8 +120,6 @@ public class JavaApplication {
         }
 
         // 메세지 테스트
-        //MessageService messageService = new JCFMessageService(userService, channelService);
-        MessageService messageService = new FileMessageService(userService, channelService);
         System.out.println("========== 메세지 테스트 ==========");
 
         User u = userService.create(new User("강우진", "Hi"));
@@ -113,6 +133,7 @@ public class JavaApplication {
         m.updateContent("반가워바보 ~ ");
         userService.update(u);
         messageService.update(m);
+
         System.out.println(u.getUserName() + "의 '" + c.getChannelName() + "' 채널에서 보낸 메세지 : " + m.getContent());
         System.out.println("마지막 이름 변경 시각 : " + c.getUpdatedAtText());
 
