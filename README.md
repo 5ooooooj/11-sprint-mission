@@ -5,11 +5,7 @@
 이 프로젝트는 다음 아키텍처 개선 과정을 통해 발전합니다.
 
 '''
-In-Memory Storage (JCF)
-        ↓
-File Persistence (Serialization)
-        ↓
-Repository Pattern (Separation of Concerns)
+In-Memory Storage (JCF) -> File Persistence (Serialization) -> Repository Pattern (Separation of Concerns)
 '''
 
 ---
@@ -73,10 +69,10 @@ Storage (JCF / File)
 ### User
 '''
 User
-├ id : UUID
-├ name : String
-├ createdAt : Long
-└ updatedAt : Long
+|- id : UUID
+|- name : String
+|- createdAt : Long
+|- updatedAt : Long
 '''
 
 ---
@@ -85,10 +81,10 @@ User
 
 '''
 Channel
-├ id : UUID
-├ name : String
-├ createdAt : Long
-└ updatedAt : Long
+|- id : UUID
+|- name : String
+|- createdAt : Long
+|- updatedAt : Long
 '''
 
 ---
@@ -97,12 +93,12 @@ Channel
 
 '''
 Message
-├ id : UUID
-├ userId : UUID
-├ channelId : UUID
-├ content : String
-├ createdAt : Long
-└ updatedAt : Long
+|- id : UUID
+|- userId : UUID
+|- channelId : UUID
+|- content : String
+|- createdAt : Long
+|- updatedAt : Long
 '''
 
 Message 생성 시 다음 검증이 수행됩니다.
@@ -148,11 +144,7 @@ Map<UUID, User> data = new HashMap<>();
 데이터를 유지하기 위해 **File I/O + 객체 직렬화**를 도입했습니다.
 
 '''
-Java Object
-    ↓
-Serialization
-    ↓
-File (.ser)
+Java Object -> Serialization -> File (.ser)
 '''
 
 사용 기술
@@ -169,21 +161,13 @@ ObjectOutputStream
 직렬화는 **Java 객체를 byte 배열로 변환하여 저장하는 과정** 입니다.
 
 '''
-Java Object
-    ↓
-byte[]
-    ↓
-File
+Java Object -> byte[] -> File
 '''
 
 역직렬화
 
 '''
-File
-  ↓
-byte[]
-  ↓
-Java Object
+File -> byte[] -> Java Object
 '''
 
 ---
@@ -216,7 +200,7 @@ private static final long serialVersionUID = 1L;
 
 '''
 Service
-└ HashMap 조작
+|- HashMap 조작
 '''
 
 이 구조는 다음 문제를 발생시킵니다.
@@ -277,29 +261,29 @@ delete()
 com.sprint.mission.discodeit
 
 entity
- ├ User
- ├ Channel
- └ Message
+ |- User
+ |- Channel
+ |- Message
 
  service
- ├ UserService
- ├ ChannelService
- └ MessageService
+ |- UserService
+ |- ChannelService
+ |- MessageService
 
 service.jcf
- ├ JCFUserService
- ├ JCFChannelService
- └ JCFMessageService
+ |- JCFUserService
+ |- JCFChannelService
+ |- JCFMessageService
 
 service.file
- ├ FileUserService
- ├ FileChannelService
- └ FileMessageService
+ |- FileUserService
+ |- FileChannelService
+ |- FileMessageService
 
 repository
- ├ UserRepository
- ├ ChannelRepository
- └ MessageRepository
+ |- UserRepository
+ |- ChannelRepository
+ |- MessageRepository
 
 repository.jcf
 repository.file
@@ -314,7 +298,7 @@ repository.file
 ### 1. 데이터 저장 방식
 
 ''' 
-Memory → File Persistence
+Memory -> File Persistence
 '''
 
 데이처 영속성 개념 이해
@@ -336,8 +320,8 @@ Java 객체를 파일로 저장하는 방법
 ### 4. 관심사 분리
 
 ''' 
-Service → Business Logic
-Repository → Persistence
+Service -> Business Logic
+Repository -> Persistence
 '''
 
 ---
