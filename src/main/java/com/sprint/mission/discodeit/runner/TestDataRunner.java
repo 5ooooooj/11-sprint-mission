@@ -1,62 +1,38 @@
-package com.sprint.mission.discodeit;
+package com.sprint.mission.discodeit.runner;
 
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.entity.User;
-
-import com.sprint.mission.discodeit.repository.ChannelRepository;
-import com.sprint.mission.discodeit.repository.MessageRepository;
-import com.sprint.mission.discodeit.repository.UserRepository;
-
-import com.sprint.mission.discodeit.repository.file.FileChannelRepository;
-import com.sprint.mission.discodeit.repository.file.FileMessageRepository;
-import com.sprint.mission.discodeit.repository.file.FileUserRepository;
-
-import com.sprint.mission.discodeit.repository.jcf.JCFChannelRepository;
-import com.sprint.mission.discodeit.repository.jcf.JCFMessageRepository;
-import com.sprint.mission.discodeit.repository.jcf.JCFUserRepository;
-
 import com.sprint.mission.discodeit.service.ChannelService;
 import com.sprint.mission.discodeit.service.MessageService;
 import com.sprint.mission.discodeit.service.UserService;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
 
-import com.sprint.mission.discodeit.service.file.FileChannelService;
-import com.sprint.mission.discodeit.service.file.FileMessageService;
-import com.sprint.mission.discodeit.service.file.FileUserService;
-
-import com.sprint.mission.discodeit.service.jcf.JCFChannelService;
-import com.sprint.mission.discodeit.service.jcf.JCFMessageService;
-import com.sprint.mission.discodeit.service.jcf.JCFUserService;
-
-import java.lang.module.ModuleDescriptor;
 import java.util.UUID;
 
-// Compare JCFService to FileService
+// 실행, 검증, 출력 코드
+// Spring Boot가 시작된 후 실행할 작업
 
-// 공통 (비즈니스 로직) : create, findById, findAll, update, delete
-//      + FileService에만 validate 있음
-//      + data.put(), data.remove(), new ArrayList<>(data.values())
-// 차이 (저장 로직) : JCFService는 Map만 사용, 메모리저장, 앱종료시 데이터 사라짐
-//                FileService는 Map + load() & save(), 파일저장, 데이터 누적(유지)
+@Component // 이 클래스를 Bean으로 등록해라
+public class TestDataRunner implements CommandLineRunner {
 
-// 현재 FileService는 비즈니스로직과 저장 로직을 둘 다 담당하고 있음
-// 따라서 이제부터 관심사 분리. 즉, Service와 Repository를 분리할 것
+    private final UserService userService;
+    private final ChannelService channelService;
+    private final MessageService messageService;
 
-// Service는 무엇을 저장할지 (규칙) 담당
-// Repository는 어떻게 저장할지 담당 >> 유지보수 쉬워짐 
+    public TestDataRunner(
+            UserService userService,
+            ChannelService channelService,
+            MessageService messageService
+    ) {
+        this.userService = userService;
+        this.channelService = channelService;
+        this.messageService = messageService;
+    }
 
-public class JavaApplication {
-    public static void main(String[] args) {
-        // 조립 (Repository -> Service)
-
-        UserRepository userRepository = new FileUserRepository("data/users.ser");
-        ChannelRepository channelRepository = new FileChannelRepository("data/channels.ser");
-        MessageRepository messageRepository = new FileMessageRepository("data/messages.ser");
-
-        UserService userService = new FileUserService(userRepository);
-        ChannelService channelService = new FileChannelService(channelRepository);
-        MessageService messageService = new FileMessageService(messageRepository, userService, channelService);
-
+    @Override
+    public void run(String... args) {
         // 유저 테스트
         System.out.println("========== 유저 테스트 ==========");
 
