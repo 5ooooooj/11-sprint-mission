@@ -12,23 +12,14 @@ import com.sprint.mission.discodeit.repository.file.FileChannelRepository;
 import com.sprint.mission.discodeit.repository.file.FileMessageRepository;
 import com.sprint.mission.discodeit.repository.file.FileUserRepository;
 
-import com.sprint.mission.discodeit.repository.jcf.JCFChannelRepository;
-import com.sprint.mission.discodeit.repository.jcf.JCFMessageRepository;
-import com.sprint.mission.discodeit.repository.jcf.JCFUserRepository;
-
 import com.sprint.mission.discodeit.service.ChannelService;
 import com.sprint.mission.discodeit.service.MessageService;
 import com.sprint.mission.discodeit.service.UserService;
 
-import com.sprint.mission.discodeit.service.file.FileChannelService;
-import com.sprint.mission.discodeit.service.file.FileMessageService;
-import com.sprint.mission.discodeit.service.file.FileUserService;
+import com.sprint.mission.discodeit.service.basic.BasicChannelService;
+import com.sprint.mission.discodeit.service.basic.BasicMessageService;
+import com.sprint.mission.discodeit.service.basic.BasicUserService;
 
-import com.sprint.mission.discodeit.service.jcf.JCFChannelService;
-import com.sprint.mission.discodeit.service.jcf.JCFMessageService;
-import com.sprint.mission.discodeit.service.jcf.JCFUserService;
-
-import java.lang.module.ModuleDescriptor;
 import java.util.UUID;
 
 // Compare JCFService to FileService
@@ -53,9 +44,13 @@ public class JavaApplication {
         ChannelRepository channelRepository = new FileChannelRepository("data/channels.ser");
         MessageRepository messageRepository = new FileMessageRepository("data/messages.ser");
 
-        UserService userService = new FileUserService(userRepository);
-        ChannelService channelService = new FileChannelService(channelRepository);
-        MessageService messageService = new FileMessageService(messageRepository, userService, channelService);
+        UserService userService = new BasicUserService(userRepository);
+        ChannelService channelService = new BasicChannelService(channelRepository);
+        MessageService messageService = new BasicMessageService(
+                messageRepository,
+                userRepository,
+                channelRepository
+        );
 
         // 유저 테스트
         System.out.println("========== 유저 테스트 ==========");

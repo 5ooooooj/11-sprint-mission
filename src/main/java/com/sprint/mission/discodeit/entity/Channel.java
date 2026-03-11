@@ -23,7 +23,7 @@ public class Channel extends BaseEntity {
         touch();
     }
 
-    public void updateDescriptrion(String description) {
+    public void updateDescription(String description) {
         this.description = description;
         touch();
     }

@@ -8,7 +8,7 @@ public class User extends BaseEntity{
     public User(String userName, String statusMessage) {
         super();
         this.userName = userName;
-        this.statusMessage = "";
+        this.statusMessage = statusMessage;
     }
 
     public String getUserName() {
