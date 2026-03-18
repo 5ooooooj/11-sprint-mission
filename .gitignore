@@ -1,0 +1,9 @@
+.DS_Store
+.idea/
+.gradle/
+build/build/
+*.class
+users.ser
+.serbuild/
+build/
+*.ser
