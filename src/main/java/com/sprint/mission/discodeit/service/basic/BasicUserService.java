@@ -3,17 +3,19 @@ package com.sprint.mission.discodeit.service.basic;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.repository.UserRepository;
 import com.sprint.mission.discodeit.service.UserService;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.UUID;
 
+@RequiredArgsConstructor
 public class BasicUserService implements UserService {
 
     private final UserRepository userRepository;
 
-    public BasicUserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+//    public BasicUserService(UserRepository userRepository) {
+//        this.userRepository = userRepository;
+//    } // @RequiredArgsConstructor사용으로 대
 
     @Override
     public User create(User user) {

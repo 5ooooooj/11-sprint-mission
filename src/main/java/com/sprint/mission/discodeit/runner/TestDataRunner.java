@@ -14,7 +14,8 @@ import java.util.UUID;
 // 실행, 검증, 출력 코드
 // Spring Boot가 시작된 후 실행할 작업
 
-@Component // 이 클래스를 Bean으로 등록해라
+// @Component // 이 클래스를 Bean으로 등록해라
+// 나중에 데이터 러너를 컴포넌트해서 메인에서는 코드 실행만 하게 만들 것
 public class TestDataRunner implements CommandLineRunner {
 
     private final UserService userService;
