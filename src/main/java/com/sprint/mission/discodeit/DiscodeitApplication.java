@@ -1,5 +1,8 @@
 package com.sprint.mission.discodeit;
 
+import com.sprint.mission.discodeit.dto.UserCreateRequest;
+import com.sprint.mission.discodeit.dto.UserDto;
+import com.sprint.mission.discodeit.dto.UserUpdateRequest;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.entity.User;
@@ -36,39 +39,61 @@ public class DiscodeitApplication {
 		// 유저 테스트
 		System.out.println("========== 유저 테스트 ==========");
 
-		User u1 = new User("강우진", "안녕하세요.");
-		userService.create(u1); // 생성
+		UserDto u1 = userService.create(new UserCreateRequest(
+				"강우진",
+				"dnwls@codeit.com",
+				"1234",
+				"안녕하세요.",
+				null
+		));
 
-		User u2 = new User("박지현", "반갑습니다.");
-		userService.create(u2); // 생성
+		UserDto u2 = userService.create(new UserCreateRequest(
+				"박지현",
+				"jh@codeit.com",
+				"1111",
+				"반갑습니다.",
+				null
+		));
 
-		User u3 = new User("한교동", "잘부탁드려요.");
-		userService.create(u3); // 생성
+		UserDto u3 = userService.create(new UserCreateRequest(
+				"한교동",
+				"han@codeit.com",
+				"9999",
+				"하이~",
+				null
+		));
 
-		System.out.println("유저 ID : " +  userService.findById(u1.getId()).getId());
-		System.out.println("유저 ID : " +  userService.findById(u2.getId()).getId());
-		System.out.println("유저 ID : " +  userService.findById(u3.getId()).getId());
+		System.out.println("유저 ID : " +  userService.findById(u1.id()).id());
+		System.out.println("유저 ID : " +  userService.findById(u2.id()).id());
+		System.out.println("유저 ID : " +  userService.findById(u2.id()).id());
 
-		System.out.println("유저 정보 : " + userService.findById(u1.getId())); // 정보 조회
-		System.out.println("유저 정보 : " + userService.findById(u2.getId()));
-		System.out.println("유저 정보 : " + userService.findById(u3.getId()));
+
+		System.out.println("유저 정보 : " + userService.findById(u1.id())); // 정보 조회
+		System.out.println("유저 정보 : " + userService.findById(u2.id()));
+		System.out.println("유저 정보 : " + userService.findById(u3.id()));
 
 		System.out.println("현재 유저 수 : " + userService.findAll().size() + "명"); // 전체 몇명 ?
 
-		u1.updateUserName("강강우우진진"); // 이름 수정
-		userService.update(u1);
-		System.out.println("u1 이름 변경 후 : " + userService.findById(u1.getId()).getUserName());
+		userService.update(new UserUpdateRequest(
+			u1.id(),
+			"강강우우진진",
+			u1.email(),
+			null,
+			u1.statusMessage(),
+			null
+		));
+		System.out.println("u1 이름 변경 후 : " + userService.findById(u1.id()).userName());
 
-		userService.delete(u1.getId()); // 삭제
+		userService.delete(u1.id()); // 삭제
 		// userService.update(u1); 이미 삭제된게 맞아 그레서 update가 안돼
 		// 그런데, 진짜 DB랑 연결한게 아니기때문에 값은 존재하는듯 ?
 
 		System.out.println("현재 사용자 수 : " + userService.findAll().size() + "명");
 
-		if (userService.findById(u1.getId()) == null) {
+		try {
+			System.out.println(userService.findById(u1.id()));
+		} catch (Exception e){
 			System.out.println("존재하지 않는 id 입니다.");
-		} else {
-			System.out.println(userService.findById(u1.getId()));
 		}
 	}
 
@@ -106,20 +131,33 @@ public class DiscodeitApplication {
 		// 메세지 테스트
 		System.out.println("========== 메세지 테스트 ==========");
 
-		User u = userService.create(new User("강우진", "Hi"));
+		UserDto u = userService.create(new UserCreateRequest(
+				"강우진",
+				"dnwls@codeit.com",
+				"1234",
+				"Hi",
+				null
+		));
 		Channel c = channelService.create(new Channel("sb11", "스프링백엔드11기"));
-		Message m = new Message(u.getId(), c.getId(), "반가워");
+		Message m = new Message(u.id(), c.getId(), "반가워");
 
 		messageService.create(m);
-		System.out.println(u.getUserName() + "의 '" + c.getChannelName() + "' 채널에서 보낸 메세지 : " + m.getContent());
+		System.out.println(u.userName() + "의 '" + c.getChannelName() + "' 채널에서 보낸 메세지 : " + m.getContent());
 
-		u.updateUserName("강우진바보");
+		userService.update(new UserUpdateRequest(
+			u.id(),
+			"강우진바보",
+			u.email(),
+			null,
+			u.statusMessage(),
+			null
+		));
 		m.updateContent("반가워바보 ~ ");
-		userService.update(u);
 		messageService.update(m);
 
-		System.out.println(u.getUserName() + "의 '" + c.getChannelName() + "' 채널에서 보낸 메세지 : " + m.getContent());
-		System.out.println("마지막 이름 변경 시각 : " + u.getUpdatedAtText());
+		UserDto updatedUser = userService.findById(u.id());
+		System.out.println(updatedUser.userName() + "의 '" + c.getChannelName() + "' 채널에서 보낸 메세지 : " + m.getContent());
+		System.out.println("마지막 이름 변경 시각 : " + updatedUser.updatedAt());
 		System.out.println("마지막 메세지 변경 시각 : " + m.getUpdatedAtText());
 
 		// 일치하는 user id가 없을때 검증
@@ -135,7 +173,7 @@ public class DiscodeitApplication {
 		channelService.delete(deletedChannel.getId());
 
 		try {
-			Message bad2 = new Message(u.getId(), deletedChannel.getId(), "실패");
+			Message bad2 = new Message(u.id(), deletedChannel.getId(), "실패");
 			messageService.create(bad2);
 		} catch (Exception e) {
 			System.out.println(e.getMessage());

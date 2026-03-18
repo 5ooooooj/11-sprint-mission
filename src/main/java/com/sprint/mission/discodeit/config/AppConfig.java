@@ -41,7 +41,9 @@ public class AppConfig {
     }
 
     @Bean
-    public UserService userService(UserRepository userRepository) {
+    public UserService userService(
+            UserRepository userRepository
+    ) {
         return new BasicUserService(userRepository);
     }
 

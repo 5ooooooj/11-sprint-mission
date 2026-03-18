@@ -7,19 +7,32 @@ import java.util.UUID;
 @Getter
 public class User extends BaseEntity{
     private String userName;
-    // 주민번호나, email 같은 객체로 ..
     private String statusMessage;
     private UUID profileId;
+    private String email;
+    private String password;
 
-    public User(String userName, String statusMessage) {
+    public User(String userName, String email, String password, String statusMessage) {
         super();
         this.userName = userName;
+        this.email = email;
+        this.password = password;
         this.statusMessage = statusMessage;
         this.profileId = null;
     }
 
     public void updateUserName(String userName){
         this.userName = userName;
+        touch();
+    }
+
+    public void updateEmail(String email){
+        this.email = email;
+        touch();
+    }
+
+    public void updatePassword(String password){
+        this.password = password;
         touch();
     }
 
