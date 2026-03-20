@@ -158,10 +158,17 @@ public class DiscodeitApplication {
 		));
 		ChannelResponse c = channelService.createPublicChannel(
 				new PublicChannelCreateRequest("sb11", "스프링백엔드11기"));
-		Message m = new Message(u.id(), c.id(), "반가워");
 
-		messageService.create(m);
-		System.out.println(u.userName() + "의 '" + c.channelName() + "' 채널에서 보낸 메세지 : " + m.getContent());
+		MessageResponse m = messageService.create(
+				new MessageCreateRequest(
+						u.id(),
+						c.id(),
+						"반가워",
+						List.of()
+				)
+		);
+
+		System.out.println(u.userName() + "의 '" + c.channelName() + "' 채널에서 보낸 메세지 : " + m.content());
 
 		userService.update(new UserUpdateRequest(
 			u.id(),
@@ -171,18 +178,27 @@ public class DiscodeitApplication {
 			u.statusMessage(),
 			null
 		));
-		m.updateContent("반가워바보 ~ ");
-		messageService.update(m);
+
+		MessageResponse updatedMessage = messageService.update(
+				m.id(),
+				new MessageUpdateRequest("반가워바보 ~")
+		);
 
 		UserDto updatedUser = userService.findById(u.id());
-		System.out.println(updatedUser.userName() + "의 '" + c.channelName() + "' 채널에서 보낸 메세지 : " + m.getContent());
+		System.out.println(updatedUser.userName() + "의 '" + c.channelName() + "' 채널에서 보낸 메세지 : " + m.content());
 		System.out.println("마지막 이름 변경 시각 : " + updatedUser.updatedAt());
-		System.out.println("마지막 메세지 변경 시각 : " + m.getUpdatedAtText());
+		System.out.println("마지막 메세지 변경 시각 : " + m.updatedAt());
 
 		// 일치하는 user id가 없을때 검증
 		try {
-			Message bad = new Message(UUID.randomUUID(), c.id(), "실패");
-			messageService.create(bad);
+			messageService.create(
+				new MessageCreateRequest(
+						UUID.randomUUID(),
+						c.id(),
+						"실패",
+						List.of()
+				)
+			);
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
@@ -193,8 +209,14 @@ public class DiscodeitApplication {
 		channelService.delete(deletedChannel.id());
 
 		try {
-			Message bad2 = new Message(u.id(), deletedChannel.id(), "실패");
-			messageService.create(bad2);
+			messageService.create(
+					new MessageCreateRequest(
+							u.id(),
+							deletedChannel.id(),
+							"실패",
+							List.of()
+					)
+			);
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}

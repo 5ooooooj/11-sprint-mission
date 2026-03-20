@@ -1,3 +1,4 @@
+/*
 package com.sprint.mission.discodeit.service.jcf;
 
 import com.sprint.mission.discodeit.entity.Message;
@@ -64,3 +65,4 @@ public class JCFMessageService implements MessageService {
         messageRepository.delete(id);
     }
 }
+*/

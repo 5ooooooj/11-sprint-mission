@@ -83,6 +83,11 @@ public class AppConfig {
             UserRepository userRepository,
             ChannelRepository channelRepository
     ) {
-        return new BasicMessageService(messageRepository, userRepository, channelRepository);
+        return new BasicMessageService(
+                messageRepository(),
+                userRepository(),
+                channelRepository(),
+                binaryContentRepository()
+        );
     }
 }
