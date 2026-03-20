@@ -1,11 +1,13 @@
 package com.sprint.mission.discodeit;
 
+import com.sprint.mission.discodeit.dto.LoginRequest;
 import com.sprint.mission.discodeit.dto.UserCreateRequest;
 import com.sprint.mission.discodeit.dto.UserDto;
 import com.sprint.mission.discodeit.dto.UserUpdateRequest;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.entity.User;
+import com.sprint.mission.discodeit.service.AuthService;
 import com.sprint.mission.discodeit.service.ChannelService;
 import com.sprint.mission.discodeit.service.MessageService;
 import com.sprint.mission.discodeit.service.UserService;
@@ -29,10 +31,12 @@ public class DiscodeitApplication {
 		UserService userService = context.getBean(UserService.class);
 		ChannelService channelService = context.getBean(ChannelService.class);
 		MessageService messageService = context.getBean(MessageService.class);
+		AuthService authService = context.getBean(AuthService.class);
 
 		userTest(userService);
 		channelTest(channelService);
 		messageTest(userService,channelService,messageService);
+		authTest(authService);
 	}
 
 	private static void userTest(UserService userService) {
@@ -178,5 +182,22 @@ public class DiscodeitApplication {
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
+	}
+
+	public static void authTest(AuthService authService) {
+		System.out.println("========== 로그인 테스트 ==========");
+
+		UserDto loginUser = authService.login(new LoginRequest(
+				"한교동",
+				"9999"
+		));
+
+		UserDto loginUser2 = authService.login(new LoginRequest(
+				"강우진바보",
+				"1234"
+		));
+
+		System.out.println("로그인 성공 : " + loginUser.userName());
+		System.out.println("로그인 성공 : " + loginUser2.userName());
 	}
 }
