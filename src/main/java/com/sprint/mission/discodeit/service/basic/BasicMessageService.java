@@ -61,7 +61,7 @@ public class BasicMessageService implements MessageService {
     }
 
     private void validate(Message message) {
-        if (userRepository.findById(message.getUserId()) == null) {
+        if (userRepository.findById(message.getAuthorId()) == null) {
             throw new IllegalStateException("존재하지 않는 유저입니다.");
         }
 

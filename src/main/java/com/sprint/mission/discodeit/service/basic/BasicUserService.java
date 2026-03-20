@@ -84,7 +84,7 @@ public class BasicUserService implements UserService {
             user.updateUserName(request.userName());
         }
 
-        if (request.email() != null && !request.email().equals(user.getUserName())) {
+        if (request.email() != null && !request.email().equals(user.getEmail())) {
             validateDuplicateEmail(request.email());
             user.updateEmail(request.email());
         }

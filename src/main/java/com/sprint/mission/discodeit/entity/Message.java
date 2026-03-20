@@ -16,7 +16,7 @@ public class Message extends BaseEntity {
 
     public Message(UUID authorId, UUID channelId, String content) {
         super();
-        this.authorId = getAuthorId();
+        this.authorId = authorId;
         this.channelId = channelId;
         this.content = content;
         this.attachmentIds = new ArrayList<>();

@@ -65,7 +65,7 @@ public class DiscodeitApplication {
 
 		System.out.println("유저 ID : " +  userService.findById(u1.id()).id());
 		System.out.println("유저 ID : " +  userService.findById(u2.id()).id());
-		System.out.println("유저 ID : " +  userService.findById(u2.id()).id());
+		System.out.println("유저 ID : " +  userService.findById(u3.id()).id());
 
 
 		System.out.println("유저 정보 : " + userService.findById(u1.id())); // 정보 조회
