@@ -47,6 +47,11 @@ public class AppConfig {
     }
 
     @Bean
+    public ReadStatusRepository readStatusRepository() {
+        return new JCFReadStatusRepository();
+    }
+
+    @Bean
     public UserService userService(
             UserRepository userRepository,
             BinaryContentRepository binaryContentRepository,
@@ -64,8 +69,12 @@ public class AppConfig {
     }
 
     @Bean
-    public ChannelService channelService(ChannelRepository channelRepository) {
-        return new BasicChannelService(channelRepository);
+    public ChannelService channelService() {
+        return new BasicChannelService(
+                channelRepository(),
+                userRepository(),
+                readStatusRepository(),
+                messageRepository());
     }
 
     @Bean

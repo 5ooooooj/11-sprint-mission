@@ -1,9 +1,6 @@
 package com.sprint.mission.discodeit;
 
-import com.sprint.mission.discodeit.dto.LoginRequest;
-import com.sprint.mission.discodeit.dto.UserCreateRequest;
-import com.sprint.mission.discodeit.dto.UserDto;
-import com.sprint.mission.discodeit.dto.UserUpdateRequest;
+import com.sprint.mission.discodeit.dto.*;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.entity.User;
@@ -15,6 +12,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
+import java.util.List;
 import java.util.UUID;
 
 // 예전 main에서는 객체생성, 의존성연결, 테스트실행 모두 담당
@@ -34,7 +32,24 @@ public class DiscodeitApplication {
 		AuthService authService = context.getBean(AuthService.class);
 
 		userTest(userService);
-		channelTest(channelService);
+
+		UserDto u1 = userService.create(new UserCreateRequest(
+				"채널테스트유저1",
+				"ch1@test.com",
+				"1111",
+				"테스트1",
+				null
+		));
+
+		UserDto u2 = userService.create(new UserCreateRequest(
+				"채널테스트유저2",
+				"ch2@test.com",
+				"2222",
+				"테스트2",
+				null
+		));
+
+		channelTest(channelService,u1.id(),u2.id());
 		messageTest(userService,channelService,messageService);
 		authTest(authService);
 	}
@@ -101,33 +116,32 @@ public class DiscodeitApplication {
 		}
 	}
 
-	private static void channelTest(ChannelService channelService) {
+	private static void channelTest(ChannelService channelService, UUID userId1, UUID userId2) {
 		// 채널 테스트
 		System.out.println("========== 채널 테스트 ==========");
 
-		Channel c1 = new Channel("모각코", "모여서각자코딩");
-		channelService.create(c1);
+		ChannelResponse c1 = channelService.createPublicChannel(
+				new PublicChannelCreateRequest("모각코","모여서각자코딩")
+		);
 
-		Channel c2 = new Channel("sb11", "스프링백엔드11기");
-		channelService.create(c2);
+		ChannelResponse c2 = channelService.createPrivateChannel(
+				new PrivateChannelCreateRequest(List.of(userId1,userId2))
+		);
 
-		System.out.print("1번 채널명 : " + channelService.findById(c1.getId()).getChannelName());
-		System.out.println(" // " + channelService.findById(c1.getId()).getDescription());
-		System.out.print("2번 채널명 : " + channelService.findById(c2.getId()).getChannelName());
-		System.out.println(" // " + channelService.findById(c2.getId()).getDescription());
+		System.out.print("1번 채널명 : " + c1.channelName());
+		System.out.println(" // " + c1.description());
+		System.out.print("2번 채널타입 : " + c2.type());
+		System.out.println(" // 참여자 수 : " + c2.participantsIds().size());
 
-		System.out.println("현재 채널 개수 : " + channelService.findAll().size() + "개");
+		channelService.update(c1.id(), new ChannelUpdateRequest("Code-it","코드잇"));
+		System.out.println("바뀐 1번 채널명 : " + channelService.findById(c1.id()).channelName()); // 조회
 
-		c2.updateChannelName("Code-it"); // 수정
-		channelService.update(c2);
-		System.out.println("바뀐 2번 채널명 : " + channelService.findById(c2.getId()).getChannelName()); // 조회
+		channelService.delete(c1.id());
 
-		channelService.delete(c1.getId());
-
-		if (channelService.findById(c1.getId()) == null) {
+		try {
+			System.out.println(channelService.findById(c1.id()));
+		} catch (Exception e){
 			System.out.println("존재하지 않는 채널입니다.");
-		} else {
-			System.out.println(channelService.findById(c1.getId()));
 		}
 	}
 
@@ -142,11 +156,12 @@ public class DiscodeitApplication {
 				"Hi",
 				null
 		));
-		Channel c = channelService.create(new Channel("sb11", "스프링백엔드11기"));
-		Message m = new Message(u.id(), c.getId(), "반가워");
+		ChannelResponse c = channelService.createPublicChannel(
+				new PublicChannelCreateRequest("sb11", "스프링백엔드11기"));
+		Message m = new Message(u.id(), c.id(), "반가워");
 
 		messageService.create(m);
-		System.out.println(u.userName() + "의 '" + c.getChannelName() + "' 채널에서 보낸 메세지 : " + m.getContent());
+		System.out.println(u.userName() + "의 '" + c.channelName() + "' 채널에서 보낸 메세지 : " + m.getContent());
 
 		userService.update(new UserUpdateRequest(
 			u.id(),
@@ -160,24 +175,25 @@ public class DiscodeitApplication {
 		messageService.update(m);
 
 		UserDto updatedUser = userService.findById(u.id());
-		System.out.println(updatedUser.userName() + "의 '" + c.getChannelName() + "' 채널에서 보낸 메세지 : " + m.getContent());
+		System.out.println(updatedUser.userName() + "의 '" + c.channelName() + "' 채널에서 보낸 메세지 : " + m.getContent());
 		System.out.println("마지막 이름 변경 시각 : " + updatedUser.updatedAt());
 		System.out.println("마지막 메세지 변경 시각 : " + m.getUpdatedAtText());
 
 		// 일치하는 user id가 없을때 검증
 		try {
-			Message bad = new Message(UUID.randomUUID(), c.getId(), "실패");
+			Message bad = new Message(UUID.randomUUID(), c.id(), "실패");
 			messageService.create(bad);
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
 
 		// 존재하지 않는 channel 테스트
-		Channel deletedChannel = channelService.create(new Channel("삭제용","테스트"));
-		channelService.delete(deletedChannel.getId());
+		ChannelResponse deletedChannel = channelService.createPublicChannel(
+				new PublicChannelCreateRequest("삭제용","테스트"));
+		channelService.delete(deletedChannel.id());
 
 		try {
-			Message bad2 = new Message(u.id(), deletedChannel.getId(), "실패");
+			Message bad2 = new Message(u.id(), deletedChannel.id(), "실패");
 			messageService.create(bad2);
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
