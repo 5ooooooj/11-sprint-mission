@@ -104,4 +104,9 @@ public class AppConfig {
                 userRepository()
         );
     }
+
+    @Bean
+    BinaryContentService binaryContentService(){
+        return new BasicBinaryContentService(binaryContentRepository());
+    }
 }

@@ -30,8 +30,10 @@ public class DiscodeitApplication {
         MessageService messageService = context.getBean(MessageService.class);
         AuthService authService = context.getBean(AuthService.class);
         ReadStatusService readStatusService = context.getBean(ReadStatusService.class);
+        BinaryContentService binaryContentService = context.getBean(BinaryContentService.class);
 
         runTests(userService, channelService, messageService, authService, readStatusService);
+        binaryContentTest(binaryContentService);
     }
 
     private static void runTests(
@@ -328,5 +330,50 @@ public class DiscodeitApplication {
 
         System.out.println("로그인 성공 : " + loginUser.userName());
         System.out.println("로그인 성공 : " + loginUser2.userName());
+    }
+
+    public static void binaryContentTest(BinaryContentService binaryContentService) {
+        System.out.println("========== BinaryContent 테스트 ==========");
+
+        BinaryContentResponse binaryContent1 = binaryContentService.create(
+                new BinaryContentCreateRequest(
+                        "profile.png",
+                        "image/png",
+                        "hello-image".getBytes()
+                )
+        );
+
+        BinaryContentResponse binaryContent2 = binaryContentService.create(
+                new BinaryContentCreateRequest(
+                        "resume.pdf",
+                        "application.pdf",
+                        "hello-pdf".getBytes()
+                )
+        );
+
+        System.out.println("생성된 파일 1 ID : " + binaryContent1.id());
+        System.out.println("생성된 파일 1 이름 : " + binaryContent1.fileName());
+        System.out.println("생성된 파일 1 타입 " + binaryContent1.contentType());
+        System.out.println("파일 1 바이트 길이 : " + binaryContent1.bytes().length);
+
+        System.out.println("생성된 파일 2 ID : " + binaryContent2.id());
+        System.out.println("생성된 파일 2 이름 : " + binaryContent2.fileName());
+        System.out.println("생성된 파일 2 타입 " + binaryContent2.contentType());
+
+        BinaryContentResponse found = binaryContentService.findById(binaryContent1.id());
+        System.out.println("단건 조회 성공 : " + found.fileName());
+
+        List<BinaryContentResponse> contents = binaryContentService.findAllByIdIn(
+                List.of(binaryContent1.id(), binaryContent2.id())
+        );
+        System.out.println("ID 목록 조회 개수 : " + contents.size());
+
+        binaryContentService.delete(binaryContent1.id());
+
+        try {
+            System.out.println(binaryContentService.findById(binaryContent1.id()));
+        }catch (Exception e) {
+            System.out.println("삭제 후 조회 실패 확인 : " + e.getMessage());
+        }
     }
 }
