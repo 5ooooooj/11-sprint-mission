@@ -397,9 +397,7 @@ Service
    ↓
 Repository (interface)
    ↓
-┌───────────────┬───────────────┐
-│ JCFRepository │ FileRepository │
-└───────────────┴───────────────┘
+JCFRepository or FileRepository 
 
 ### 특징
 
