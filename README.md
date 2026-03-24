@@ -388,8 +388,17 @@ delete()
 discodeit:
   repository:
     type: jcf  # jcf | file
-    file-directory: data (.discodeit)
+    file-directory: data 
 ```
+
+---
+
+## 동작 방식
+
+| 설정 값 | 동작 |
+|---|---|
+| jcf | 메모리 기반 Repository 사용 |
+| file | 파일 기반 Repository 사용 |
 
 ---
 
@@ -414,7 +423,7 @@ Service → Repository (interface) → JCFRepository or FileRepository
 ```
 discodeit:
   repository:
-    file-directory: data (.discodeit)
+    file-directory: data 
 ```
 
 ex) data/user.ser, data/messages.ser
@@ -429,6 +438,115 @@ ex) data/user.ser, data/messages.ser
 - 테스트 / 운영 환경 분리 가능
 
 "코드는 그대로, 설정만 바꿔서 동작 변경"
+
+---
+
+# Design Decisions
+
+이 프로젝트에서는 기능 구현뿐 아니라  
+**구조의 확장성, 유지보수성, 관심사 분리**를 고려하여 설계를 진행했습니다.
+
+---
+
+## 1. Service와 Repository를 분리한 이유
+
+초기 구조에서는 Service가 비즈니스 로직과 저장 로직을 함께 처리했습니다.
+
+``` id="b4q9c3"
+Service
+ └ 데이터 저장/조회 직접 처리
+```
+
+이 방식은 구현이 단순하지만, 
+저장 방식이 바뀔 때마다 Service 코드도 함께 수정해야 한다는 문제가 있습니다.
+
+이를 해결하기 위하여 Repository 계층을 분리했습니다.
+```
+Service → Repository → Storage
+```
+
+이렇게 분리하면:
+- Service는 비즈니스 로직에 집중할 수 있고
+- Repository는 저장/조회 책임만 담당하며
+- 저장방식(JCF/File/DB...)이 바뀌어도 Service는 그대로 유지할 수 있습니다.
+
+--- 
+
+## 2. 인터페이스 기반으로 설계한 이유
+
+Repository와 Service를 인터페이스로 먼저 설계한 이유는
+구현체를 유연하게 교체할 수 있도록 하기 위함입니다.
+
+예를 들어, Repository는 다음과 같이 교체 가능합니다.
+```
+UserRepository
+ ├ JCFUserRepository
+ └ FileUserRepository
+```
+
+이 구조를 통해 의존성 역전 원칙(DIP)을 적용한 구조입니다.
+- 구현체 교체가 쉬워지고
+- 테스트가 유리해지며
+- 확장성이 높아집니다.
+
+---
+
+## 3. DTO를 도입한 이유
+초기에는 엔티티를 직접 Service 파라미터로 전달했지만,
+기능이 복잡해질수록 필요한 데이터와 불필요한 데이터가 섞이기 시작했습니다.
+
+이를 해결하기 위하여 DTO를 도입했습니다.
+```
+Application / Controller
+        ↓
+      DTO
+        ↓
+     Service
+```
+DTO를 사용하면:
+- 요청/응답 구조를 명확히 나눌 수 있고
+- 엔티티 내부 구조를 외부에 직접 노출하지 않으며
+- 파라미터를 목적에 맞게 그룹화할 수 있습니다.
+
+---
+
+## 4. 새로운 도메인을 분리한 이유
+ReadStatus, UserStatus, BinaryContent는 
+기존 User, Channel, Message에 직접 넣지 않고 별도 도메인으로 분리했습니다.
+
+이유는 각 도메인의 책임을 명확하게 하기 위해서입니다.
+- ReadStatus → 사용자별 채널 읽음 상태 관리
+- UserStatus → 사용자 접속 상태 관리
+- BinaryContent → 파일 / 이미지 저장 관리
+
+이렇게 분리하면 도메인 간 결합도를 낮추고,
+기능별 변경이 다른 도메인에 미치는 영향을 줄일 수 있습니다.
+
+---
+
+## 5. YAML 기반 설정을 도입한 이유
+Repository 구현체를 Java 코드에서 직접 바꾸는 대신
+application.yaml 설정으로 선택할 수 있도록 구성했습니다.
+
+```
+discodeit:
+  repository:
+    type: jcf
+    file-directory: data
+```
+이 방식의 장점은 다음과 같습니다.
+- 코드 수정 없이 저장 전략 변경 가능
+- 실행 환경에 따라 다른 설정 적용 가능
+- 설정과 구현을 분리하여 유지보수성 향상
+
+--- 
+
+## 6. 최종적으로 얻은 것
+이 구조를 통해 다음과 같은 방향으로 확장 가능한 기반을 만들었습니다.
+- JCF → File → Database 로 저장소 확장
+- Spring Bean / DI 기반 구조 유지
+- Service / Repository / DTO 역할 명확화
+- 유지보수성과 테스트 용이성 향상
 
 ---
 
