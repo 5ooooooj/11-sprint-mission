@@ -6,6 +6,7 @@ import com.sprint.mission.discodeit.service.ChannelService;
 import com.sprint.mission.discodeit.service.MessageService;
 import com.sprint.mission.discodeit.service.UserService;
 import com.sprint.mission.discodeit.service.AuthService;
+import com.sprint.mission.discodeit.service.ReadStatusService;
 import com.sprint.mission.discodeit.service.basic.*;
 import com.sprint.mission.discodeit.service.basic.BasicMessageService;
 import org.springframework.context.annotation.Bean;
@@ -64,7 +65,7 @@ public class AppConfig {
     public AuthService authService(
             UserRepository userRepository,
             UserStatusRepository userStatusRepository
-    ){
+    ) {
         return new BasicAuthService(userRepository, userStatusRepository);
     }
 
@@ -88,6 +89,15 @@ public class AppConfig {
                 userRepository(),
                 channelRepository(),
                 binaryContentRepository()
+        );
+    }
+
+    @Bean
+    public ReadStatusService readStatusService(){
+        return new BasicReadStatusService(
+                readStatusRepository(),
+                userRepository(),
+                channelRepository()
         );
     }
 }
