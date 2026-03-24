@@ -1,6 +1,7 @@
 package com.sprint.mission.discodeit.config;
 
 import com.sprint.mission.discodeit.repository.*;
+import com.sprint.mission.discodeit.repository.file.*;
 import com.sprint.mission.discodeit.repository.jcf.*;
 import com.sprint.mission.discodeit.service.*;
 import com.sprint.mission.discodeit.service.basic.*;
@@ -20,32 +21,32 @@ public class AppConfig {
 
     @Bean
     public UserRepository userRepository() {
-        return new JCFUserRepository();
+        return new FileUserRepository("data/users.ser");
     }
 
     @Bean
     public ChannelRepository channelRepository() {
-        return new JCFChannelRepository();
+        return new FileChannelRepository("data/channels.ser");
     }
 
     @Bean
     public MessageRepository messageRepository() {
-        return new JCFMessageRepository();
+        return new FileMessageRepository("data/messages.ser");
     }
 
     @Bean
     public BinaryContentRepository binaryContentRepository() {
-        return new JCFBinaryContentRepository();
+        return new FileBinaryContentRepository("data/binaryContents.ser");
     }
 
     @Bean
     public UserStatusRepository userStatusRepository() {
-        return new JCFUserStatusRepository();
+        return new FileUserStatusRepository("data/userStatuses.ser");
     }
 
     @Bean
     public ReadStatusRepository readStatusRepository() {
-        return new JCFReadStatusRepository();
+        return new FileReadStatusRepository("data/readStatuses.ser");
     }
 
     @Bean
@@ -75,11 +76,7 @@ public class AppConfig {
     }
 
     @Bean
-    public MessageService messageService(
-            MessageRepository messageRepository,
-            UserRepository userRepository,
-            ChannelRepository channelRepository
-    ) {
+    public MessageService messageService() {
         return new BasicMessageService(
                 messageRepository(),
                 userRepository(),
