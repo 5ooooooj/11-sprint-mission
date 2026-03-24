@@ -417,45 +417,48 @@ entity
 └ UserStatus
 
 repository
-├ BinaryContentRepository
-├ ChannelRepository
-├ MessageRepository
-├ ReadStatusRepository
-├ UserRepository
-├ UserStatusRepository
-├ jcf
-│ ├ JCFBinaryContentRepository
-│ ├ JCFChannelRepository
-│ ├ JCFMessageRepository
-│ ├ JCFReadStatusRepository
-│ ├ JCFUserRepository
-│ └ JCFUserStatusRepository
-└ file
-├ FileBinaryContentRepository
-├ FileChannelRepository
-├ FileMessageRepository
-├ FileReadStatusRepository
-├ FileUserRepository
-└ FileUserStatusRepository
+ ├ (interface)
+ │   ├ UserRepository
+ │   ├ ChannelRepository
+ │   ├ MessageRepository
+ │   ├ ReadStatusRepository
+ │   ├ UserStatusRepository
+ │   └ BinaryContentRepository
+ │
+ ├ jcf
+ │   ├ JCFUserRepository
+ │   ├ JCFChannelRepository
+ │   ├ JCFMessageRepository
+ │   ├ JCFReadStatusRepository
+ │   ├ JCFUserStatusRepository
+ │   └ JCFBinaryContentRepository
+ │
+ └ file
+     ├ FileUserRepository
+     ├ FileChannelRepository
+     ├ FileMessageRepository
+     ├ FileReadStatusRepository
+     ├ FileUserStatusRepository
+     └ FileBinaryContentRepository
 
 service
-├ AuthService
-├ BinaryContentService
-├ ChannelService
-├ MessageService
-├ ReadStatusService
-├ UserService
-├ UserStatusService
-├ basic
-│ ├ BasicAuthService
-│ ├ BasicBinaryContentService
-│ ├ BasicChannelService
-│ ├ BasicMessageService
-│ ├ BasicReadStatusService
-│ ├ BasicUserService
-│ └ BasicUserStatusService
-├ file
-└ jcf
+ ├ (interface)
+ │   ├ UserService
+ │   ├ ChannelService
+ │   ├ MessageService
+ │   ├ ReadStatusService
+ │   ├ UserStatusService
+ │   ├ BinaryContentService
+ │   └ AuthService
+ │
+ └ basic
+     ├ BasicUserService
+     ├ BasicChannelService
+     ├ BasicMessageService
+     ├ BasicReadStatusService
+     ├ BasicUserStatusService
+     ├ BasicBinaryContentService
+     └ BasicAuthService
 
 DiscodeitApplication
 ```
