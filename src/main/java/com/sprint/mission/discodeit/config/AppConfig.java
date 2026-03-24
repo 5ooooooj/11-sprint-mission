@@ -2,11 +2,7 @@ package com.sprint.mission.discodeit.config;
 
 import com.sprint.mission.discodeit.repository.*;
 import com.sprint.mission.discodeit.repository.jcf.*;
-import com.sprint.mission.discodeit.service.ChannelService;
-import com.sprint.mission.discodeit.service.MessageService;
-import com.sprint.mission.discodeit.service.UserService;
-import com.sprint.mission.discodeit.service.AuthService;
-import com.sprint.mission.discodeit.service.ReadStatusService;
+import com.sprint.mission.discodeit.service.*;
 import com.sprint.mission.discodeit.service.basic.*;
 import com.sprint.mission.discodeit.service.basic.BasicMessageService;
 import org.springframework.context.annotation.Bean;
@@ -98,6 +94,14 @@ public class AppConfig {
                 readStatusRepository(),
                 userRepository(),
                 channelRepository()
+        );
+    }
+
+    @Bean
+    public UserStatusService userStatusService(){
+        return new BasicUserStatusService(
+                userStatusRepository(),
+                userRepository()
         );
     }
 }
