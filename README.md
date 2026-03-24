@@ -391,19 +391,25 @@ discodeit:
     file-directory: data (.discodeit)
 ```
 
+---
+
 ## 구조
 
 ```
 Service → Repository (interface) → JCFRepository or FileRepository 
 ```
 
-### 특징
+---
+
+## 특징
 
 - 코드 수정 없이 저장 방식 변경 가능
 - 환경별 설정 분리 가능 (dev / prod)
 - 확장에 유리한 구조
 
-### 파일 저장 경로 설정
+---
+
+## 파일 저장 경로 설정
 
 ```
 discodeit:
@@ -413,7 +419,9 @@ discodeit:
 
 ex) data/user.ser, data/messages.ser
 
-### 설계 의도
+---
+
+## 설계 의도
 
 이 구조는 다음을 달성합니다.
 - DIP (Dependency Inversion Principle)
