@@ -54,6 +54,8 @@ Service Layer
 Repository Layer
      │
 Storage (JCF / File)
+
++ DTO Layer (Request / Response)
 ```
 
 ### Layer Responsibilities
@@ -106,6 +108,47 @@ Message
  ├ createdAt : Long
  └ updatedAt : Long
 ```
+
+---
+
+### ReadStatus
+```
+ReadStatus
+ ├ id : UUID
+ ├ userId : UUID
+ ├ channelId : UUID
+ └ lastReadAt : Instant
+```
+사용자가 특정 채널에서 마지막으로 읽은 메시지 시점을 관리합니다.
+
+---
+
+### UserStatus
+```
+UserStatus
+ ├ id : UUID
+ ├ userId : UUID
+ └ lastSeenAt : Instant
+```
+사용자의 접속 상태를 관리합니다.
+현재시간 - lastSeenAt ≤ 5분 → Online
+
+---
+
+### BinaryContent
+```
+BinaryContent
+├ id : UUID
+├ fileName : String
+├ contentType : String
+├ bytes : byte[]
+└ createdAt : Instant
+```
+이미지 및 파일과 같은 첨부 데이터를 저장합니다.
+- Message 첨부파일
+- User 프로필 이미지
+
+---
 
 Message 생성 시 다음 검증이 수행됩니다.
 
@@ -164,6 +207,60 @@ File (.ser)
 ObjectOutputStream
 ObjectInputStream
 ```
+
+---
+
+## 3. Service Layer Enhancement 
+
+Spring 기반으로 애플리케이션을 개선하고,
+DTO와 새로운 도메인을 도입하여 비즈니스 로직을 고도화했습니다.
+
+### DTO 적용
+
+기존 엔티티 기반 파라미터 전달 방식에서 DTO 기반 구조로 개선했습니다.
+
+```
+Controller / Application
+↓
+DTO
+↓
+Service
+```
+
+### 장점
+
+- 파라미터 그룹화
+- 불필요한 데이터 노출 방지
+- 유지보수성 향상
+
+### Service 고도화
+
+각 서비스는 다음과 같이 개선되었습니다.
+
+```
+| Service | 주요 기능 |
+|---|---|
+| UserService | 프로필 이미지, 온라인 상태 포함 |
+| ChannelService | PUBLIC / PRIVATE 채널 분리 |
+| MessageService | 첨부파일 처리 |
+| ReadStatusService | 읽음 상태 관리 |
+| UserStatusService | 접속 상태 관리 |
+| BinaryContentService | 파일 저장 |
+```
+
+### 의존성 구조 개선
+
+```
+Before
+Service → Service (강한 결합)
+```
+
+```
+After
+Service → Repository (느슨한 결합)
+```
+
+순환 참조를 방지하고 구조를 단순화 했습니다.
 
 ---
 
@@ -284,33 +381,83 @@ delete()
 ```
 com.sprint.mission.discodeit
 
+config
+├ AppConfig
+└ RepositoryProperties
+
+dto
+├ BinaryContentCreateRequest
+├ BinaryContentResponse
+├ ChannelResponse
+├ ChannelUpdateRequest
+├ LoginRequest
+├ MessageCreateRequest
+├ MessageResponse
+├ MessageUpdateRequest
+├ PrivateChannelCreateRequest
+├ PublicChannelCreateRequest
+├ ReadStatusCreateRequest
+├ ReadStatusResponse
+├ ReadStatusUpdateRequest
+├ UserCreateRequest
+├ UserDto
+├ UserStatusCreateRequest
+├ UserStatusResponse
+├ UserStatusUpdateRequest
+└ UserUpdateRequest
+
 entity
- ├ User
- ├ Channel
- └ Message
-
-service
- ├ UserService
- ├ ChannelService
- └ MessageService
-
-service.jcf
- ├ JCFUserService
- ├ JCFChannelService
- └ JCFMessageService
-
-service.file
- ├ FileUserService
- ├ FileChannelService
- └ FileMessageService
+├ BaseEntity
+├ BinaryContent
+├ Channel
+├ ChannelType
+├ Message
+├ ReadStatus
+├ User
+└ UserStatus
 
 repository
- ├ UserRepository
- ├ ChannelRepository
- └ MessageRepository
+├ BinaryContentRepository
+├ ChannelRepository
+├ MessageRepository
+├ ReadStatusRepository
+├ UserRepository
+├ UserStatusRepository
+├ jcf
+│ ├ JCFBinaryContentRepository
+│ ├ JCFChannelRepository
+│ ├ JCFMessageRepository
+│ ├ JCFReadStatusRepository
+│ ├ JCFUserRepository
+│ └ JCFUserStatusRepository
+└ file
+├ FileBinaryContentRepository
+├ FileChannelRepository
+├ FileMessageRepository
+├ FileReadStatusRepository
+├ FileUserRepository
+└ FileUserStatusRepository
 
-repository.jcf
-repository.file
+service
+├ AuthService
+├ BinaryContentService
+├ ChannelService
+├ MessageService
+├ ReadStatusService
+├ UserService
+├ UserStatusService
+├ basic
+│ ├ BasicAuthService
+│ ├ BasicBinaryContentService
+│ ├ BasicChannelService
+│ ├ BasicMessageService
+│ ├ BasicReadStatusService
+│ ├ BasicUserService
+│ └ BasicUserStatusService
+├ file
+└ jcf
+
+DiscodeitApplication
 ```
 
 ---
@@ -348,6 +495,35 @@ Java 객체를 파일로 저장하는 방법
 Service → Business Logic
 Repository → Persistence
 ```
+
+---
+
+### 5. DTO  패턴
+
+엔티티와 외부 계층을 분리하여
+데이터 전달 구조를 개선
+
+---
+
+### 6. 서비스 설계 확장
+
+단순 CRUD를 넘어
+- 도메인 간 관계 관리
+- 첨부파일 처리
+- 읽음 상태 관리
+
+등 실제 서비스에 가까운 구조 경험
+
+---
+
+### 7. Spring 기반 구조 이해
+
+- Bean 등록
+- Dependency Injection
+- IoC Container
+
+기존 수동 객체 생성 방식에서 
+Spring 기반 구조로 전환
 
 ---
 
