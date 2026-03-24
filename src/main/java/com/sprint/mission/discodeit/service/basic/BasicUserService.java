@@ -24,10 +24,6 @@ public class BasicUserService implements UserService {
     private final BinaryContentRepository binaryContentRepository;
     private final UserStatusRepository userStatusRepository;
 
-//    public BasicUserService(UserRepository userRepository) {
-//        this.userRepository = userRepository;
-//    } // @RequiredArgsConstructor사용으로 대체
-
     @Override
     public UserDto create(UserCreateRequest request) {
         validateDuplicateUserName(request.userName());
@@ -42,7 +38,13 @@ public class BasicUserService implements UserService {
 
         if (request.profileImage() != null) {
             BinaryContent savedProfile = saveBinaryContent(request.profileImage());
-            user.updateProfileId(savedProfile.getId());
+            user.update(
+                    null,
+                    null,
+                    null,
+                    null,
+                    savedProfile.getId()
+            );
         }
 
         User savedUser = userRepository.save(user);
@@ -81,21 +83,13 @@ public class BasicUserService implements UserService {
 
         if (request.userName() != null && !request.userName().equals(user.getUserName())) {
             validateDuplicateUserName(request.userName());
-            user.updateUserName(request.userName());
         }
 
         if (request.email() != null && !request.email().equals(user.getEmail())) {
             validateDuplicateEmail(request.email());
-            user.updateEmail(request.email());
         }
 
-        if (request.password() != null) {
-            user.updatePassword(request.password());
-        }
-
-        if (request.statusMessage() != null) {
-            user.updateStatusMessage(request.statusMessage());
-        }
+        UUID profileId = user.getProfileId();
 
         if (request.profileImage() != null) {
             if (user.getProfileId() != null) {
@@ -103,8 +97,16 @@ public class BasicUserService implements UserService {
             }
 
             BinaryContent savedProfile = saveBinaryContent(request.profileImage());
-            user.updateProfileId(savedProfile.getId());
+            profileId = savedProfile.getId();
         }
+
+        user.update(
+                request.userName(),
+                request.email(),
+                request.password(),
+                request.statusMessage(),
+                profileId
+        );
 
         User updatedUser = userRepository.save(user);
         UserStatus userStatus = userStatusRepository.findByUserId(updatedUser.getId());

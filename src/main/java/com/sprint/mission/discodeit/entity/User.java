@@ -5,7 +5,8 @@ import lombok.Getter;
 import java.util.UUID;
 
 @Getter
-public class User extends BaseEntity{
+public class User extends BaseEntity {
+
     private String userName;
     private String statusMessage;
     private UUID profileId;
@@ -21,28 +22,19 @@ public class User extends BaseEntity{
         this.profileId = null;
     }
 
-    public void updateUserName(String userName){
-        this.userName = userName;
-        touch();
-    }
+    public void update(
+            String userName,
+            String email,
+            String password,
+            String statusMessage,
+            UUID profileId
+    ) {
+        if (userName != null) this.userName = userName;
+        if (email != null) this.email = email;
+        if (password != null) this.password = password;
+        if (statusMessage != null) this.statusMessage = statusMessage;
+        if (profileId != null) this.profileId = profileId;
 
-    public void updateEmail(String email){
-        this.email = email;
-        touch();
-    }
-
-    public void updatePassword(String password){
-        this.password = password;
-        touch();
-    }
-
-    public void updateStatusMessage(String statusMessage) {
-        this.statusMessage = statusMessage;
-        touch();
-    }
-
-    public void updateProfileId(UUID profileId){
-        this.profileId = profileId;
         touch();
     }
 

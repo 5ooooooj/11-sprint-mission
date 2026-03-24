@@ -24,16 +24,6 @@ public class BasicMessageService implements MessageService {
     private final ChannelRepository channelRepository;
     private final BinaryContentRepository binaryContentRepository;
 
-//    public BasicMessageService(
-//            MessageRepository messageRepository,
-//            UserRepository userRepository,
-//            ChannelRepository channelRepository
-//    ) {
-//        this.messageRepository = messageRepository;
-//        this.userRepository = userRepository;
-//        this.channelRepository = channelRepository;
-//    }
-
     @Override
     public MessageResponse create(MessageCreateRequest request) {
         validate(request.authorId(), request.channelId());
@@ -106,7 +96,7 @@ public class BasicMessageService implements MessageService {
             throw new IllegalStateException("존재하지 않는 메세지입니다.");
         }
 
-        for(UUID attachmentId : message.getAttachmentIds()) {
+        for (UUID attachmentId : message.getAttachmentIds()) {
             binaryContentRepository.delete(attachmentId);
         }
 
