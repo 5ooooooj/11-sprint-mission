@@ -237,7 +237,6 @@ Service
 
 각 서비스는 다음과 같이 개선되었습니다.
 
-```
 | Service | 주요 기능 |
 |---|---|
 | UserService | 프로필 이미지, 온라인 상태 포함 |
@@ -246,7 +245,6 @@ Service
 | ReadStatusService | 읽음 상태 관리 |
 | UserStatusService | 접속 상태 관리 |
 | BinaryContentService | 파일 저장 |
-```
 
 ### 의존성 구조 개선
 
@@ -353,6 +351,9 @@ Service → Repository → Storage
 UserRepository
 ChannelRepository
 MessageRepository
+ReadStatusRepository
+UserStatusRepository
+BinaryContentRepository
 ```
 
 기본 CRUD
@@ -373,6 +374,57 @@ delete()
 | JCF | Memory | X | 빠른 데이터 처리 |
 | File | File System | O | 데이터 영속성 |
 | Repository | Layer Structure | O | 관심사 분리 |
+
+---
+
+# Repository Selection Strategy (Spring + YAML)
+
+이 프로젝트는 Repository 구현체를 코드 수정 없이
+**application.yaml 설정 값으로 선택할 수 있도록 설계되었습니다.**
+
+## 설정 방식
+
+```yaml
+discodeit:
+  repository:
+    type: jcf  # jcf | file
+    file-directory: data (.discodeit)
+```
+
+## 구조
+
+Service
+   ↓
+Repository (interface)
+   ↓
+┌───────────────┬───────────────┐
+│ JCFRepository │ FileRepository │
+└───────────────┴───────────────┘
+
+### 특징
+
+- 코드 수정 없이 저장 방식 변경 가능
+- 환경별 설정 분리 가능 (dev / prod)
+- 확장에 유리한 구조
+
+### 파일 저장 경로 설정
+
+```
+discodeit:
+  repository:
+    file-directory: data (.discodeit)
+```
+
+ex) data/user.ser, data/messages.ser
+
+### 설계 의도
+
+이 구조는 다음을 달성합니다.
+- DIP (Dependency Inversion Principle)
+- 구현체 교체 가능 구조
+- 테스트 / 운영 환경 분리 가능
+
+"코드는 그대로, 설정만 바꿔서 동작 변경"
 
 ---
 
