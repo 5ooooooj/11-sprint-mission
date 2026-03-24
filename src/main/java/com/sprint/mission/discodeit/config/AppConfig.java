@@ -6,6 +6,7 @@ import com.sprint.mission.discodeit.repository.jcf.*;
 import com.sprint.mission.discodeit.service.*;
 import com.sprint.mission.discodeit.service.basic.*;
 import com.sprint.mission.discodeit.service.basic.BasicMessageService;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -17,36 +18,61 @@ import org.springframework.context.annotation.Configuration;
 // 객체 생성과 의존성 연결을 main에서 하지 않고 Spring설정 클래스로 옮김
 
 @Configuration // 조립할 코드만
+@EnableConfigurationProperties(RepositoryProperties.class)
 public class AppConfig {
+
+    private RepositoryProperties properties;
+
+    public AppConfig(RepositoryProperties properties) {
+        this.properties = properties;
+    }
 
     @Bean
     public UserRepository userRepository() {
-        return new FileUserRepository("data/users.ser");
+        if (isFileRepository()){
+            return new FileUserRepository(path("users.ser"));
+        }
+        return new JCFUserRepository();
     }
 
     @Bean
     public ChannelRepository channelRepository() {
-        return new FileChannelRepository("data/channels.ser");
+        if (isFileRepository()){
+            return new FileChannelRepository(path("channels.ser"));
+        }
+        return new JCFChannelRepository();
     }
 
     @Bean
     public MessageRepository messageRepository() {
-        return new FileMessageRepository("data/messages.ser");
+        if (isFileRepository()){
+            return new FileMessageRepository(path("messages.ser"));
+        }
+        return new JCFMessageRepository();
     }
 
     @Bean
     public BinaryContentRepository binaryContentRepository() {
-        return new FileBinaryContentRepository("data/binaryContents.ser");
+        if(isFileRepository()){
+            return new FileBinaryContentRepository(path("binaryContents.ser"));
+        }
+        return new JCFBinaryContentRepository();
     }
 
     @Bean
     public UserStatusRepository userStatusRepository() {
-        return new FileUserStatusRepository("data/userStatuses.ser");
+        if(isFileRepository()){
+            return new FileUserStatusRepository(path("userStatuses.ser"));
+        }
+        return new JCFUserStatusRepository();
     }
 
     @Bean
     public ReadStatusRepository readStatusRepository() {
-        return new FileReadStatusRepository("data/readStatuses.ser");
+        if(isFileRepository()){
+            return new FileReadStatusRepository(path("readStatuses.ser"));
+        }
+        return new JCFReadStatusRepository();
     }
 
     @Bean
@@ -105,5 +131,13 @@ public class AppConfig {
     @Bean
     BinaryContentService binaryContentService(){
         return new BasicBinaryContentService(binaryContentRepository());
+    }
+
+    private boolean isFileRepository(){
+        return "file".equalsIgnoreCase(properties.getType());
+    }
+
+    private String path(String fileName){
+        return properties.getFileDirectory() + "/" + fileName;
     }
 }
