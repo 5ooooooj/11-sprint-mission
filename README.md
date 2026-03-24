@@ -393,11 +393,9 @@ discodeit:
 
 ## 구조
 
-Service
-   ↓
-Repository (interface)
-   ↓
-JCFRepository or FileRepository 
+```
+Service → Repository (interface) → JCFRepository or FileRepository 
+```
 
 ### 특징
 
