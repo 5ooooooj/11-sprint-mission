@@ -6,6 +6,7 @@ import com.sprint.mission.discodeit.dto.UserStatusUpdateRequest;
 import com.sprint.mission.discodeit.dto.UserUpdateRequest;
 import com.sprint.mission.discodeit.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,9 +31,9 @@ public class UserController {
     }
 
     @ResponseBody
-    @RequestMapping(method = RequestMethod.GET)
-    public List<UserDto> findAll() {
-        return userService.findAll();
+    @RequestMapping(value = "/findAll", method = RequestMethod.GET)
+    public ResponseEntity<List<UserDto>> findAll() {
+        return ResponseEntity.ok(userService.findAll());
     }
 
     @ResponseBody
