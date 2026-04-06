@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/read-status")
+@RequestMapping("/api/read-statuses")
 @RequiredArgsConstructor
 public class ReadStatusController {
 
